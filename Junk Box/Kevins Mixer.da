@@ -1,0 +1,32 @@
+; New microcode
+	name "Kevins Mixer";
+	copyright "Copyright (c) 2003. Kevin Horden";
+	created "30/11/2003";
+	engine "kX";
+	; comment "";
+	guid "7520fd8b-5842-4bef-a445-0ccd9f6a8c17";
+	; -- generated GUID
+    ; This is a simple mono 4 channel mixer 
+    ; this will clip quite easily. 
+    ; so keep the levels low.
+; itramsize 0
+; xtramsize 0
+; Registers
+  input In1
+  input In2
+  input In3
+  input In4
+  control level1=0.5
+  control level2=0.5
+  control level3=0.5
+  control level4=0.5
+  output out
+  temp tmp
+
+; code
+  macs tmp,0,in1,level1
+  macs tmp,tmp,in2,level2
+  macs tmp,tmp,in3,level3
+  macs tmp,tmp,in4,level4
+  macs out,0.0,tmp,1.0 
+end

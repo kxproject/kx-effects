@@ -1,0 +1,22 @@
+; New microcode
+	name "K-Output";
+	copyright "Copyright (c) 2004.";
+	created "05/08/2009";
+	engine "kX";
+	; comment "";
+	guid "ff50de33-9bbd-4f8d-960d-a17e7f8a88b2";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+input Left
+input Right
+
+macs KX_OUT(0x0),Left,0.0,0.0
+macs KX_OUT(0x1),Right,0.0,0.0   
+
+end

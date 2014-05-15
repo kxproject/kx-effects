@@ -1,0 +1,55 @@
+; New microcode
+	name "CV Gate";
+	copyright "Copyright (c) 2004.";
+	created "05/03/2009";
+	engine "kX";
+	; comment "";
+	guid "c251232b-7035-42c3-ac1d-b241823b46dc";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const MidiNote0=-0.59375
+const MidiNote127=0.729166666
+
+control MidiIn
+control GateIn
+
+output  CV
+output  Gate
+output  Scope
+
+static  OldCV
+temp    TempGate
+
+interp  CV,MidiNote0,MidiIn,MidiNote127
+
+
+andxor  0.0, gateIn, 0x000000EF,0x00000080;Is it a Note?
+skip    ccr,ccr,0x100,9                   ;Jump to the end if not
+
+andxor  0.0, gateIn, 0x000000FF,0x00000090;Is it Note On?
+skip    ccr,ccr,0x100,6                   ;No? Jump to set GateOff
+
+andxor  0.0, gateIn, 0x00FF0000,0x00000000;Is it a note on Vel 0?
+skip    ccr,ccr,0x8,4                     ;Yes? Jump to set GateOff
+
+macs    TempGate,1.0,0.0,0.0             ;Set the Gate On
+macs    oldCV,CV,0.0,0.0
+macs    scope,oldCV,0.0,0.0
+
+skip    ccr,ccr,0x7fffffff,2             ;Jump to the End             
+
+macs    TempGate,0.0,0.0,0.0                  ;Set the Gate Off
+macs    CV,oldCV,0.0,0.0
+
+macs    Gate,0,TempGate,1.0                           ;No Op 
+                                                
+
+end 
+
+                     

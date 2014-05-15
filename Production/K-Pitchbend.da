@@ -1,0 +1,33 @@
+; New microcode
+	name "K-Pitchbend";
+	copyright "Copyright (c) 2004.";
+	created "08/05/2009";
+	engine "kX";
+	; comment "";
+	guid "52afb93a-2292-4736-a8da-52b191b0274c";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+const   Zero =0.0
+const   One=1.0
+const   Tone=0.020833333
+const   Fourth=0.052083333
+
+control Range=0.0
+control Bend=0.5
+
+temp    RangeHi
+temp    RangeLo
+
+output  Out
+
+interp  RangeHi,zero,Range,3
+macints RangeHi,Tone,RangeHi,Fourth
+macsn   RangeLo,Zero,RangeHi,One
+interp  Out,RangeLo,Bend,RangeHi
+
+end

@@ -1,0 +1,133 @@
+; New microcode
+	name "K-Seq";
+	copyright "Copyright (c) 2004.";
+	created "06/14/2009";
+	engine "kX";
+	; comment "";
+	guid "8d1144c6-77a1-43f1-8be2-751fdc7da0c0";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+const Z=0x8
+const NZ=0x100
+const GT=0x180
+const LT=0x4
+const SAT=0x10
+const Always=0x7fffffff
+
+input Clock
+input Reset
+
+output CV
+
+control S1=0.5
+control S2=0.5
+control S3=0.5
+control S4=0.5
+control S5=0.5
+control S6=0.5
+control S7=0.5
+control S8=0.5
+control S9=0.5
+control S10=0.5
+control S11=0.5
+control S12=0.5
+control S13=0.5
+control S14=0.5
+control S15=0.5
+control S16=0.5
+
+temp QuantizedNote
+temp InvClock
+
+static Lastclock
+static Counter
+static JumpCounter
+
+;Clock
+macs invclock,0.0,clock,-1.0  
+andxor Lastclock,Lastclock,clock,0x0
+skip   ccr,ccr,Z,2
+acc3   Counter,counter,0x1,0;
+andxor Counter,counter,0xF,0x0
+andxor Lastclock,clock,0x80000000,0x80000000
+
+macints   Jumpcounter,0.0,Counter,0x3
+
+
+
+skip    ccr,ccr,Always,JumpCounter   
+
+interp QuantizedNote,-12,S1,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,45  ;Done
+
+interp QuantizedNote,-12,S2,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,42  ;Done
+
+interp QuantizedNote,-12,S3,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,39  ;Done
+
+interp QuantizedNote,-12,S4,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,36  ;Done
+
+interp QuantizedNote,-12,S5,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,33  ;Done
+
+interp QuantizedNote,-12,S6,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,30  ;Done
+
+interp QuantizedNote,-12,S7,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,27  ;Done
+
+interp QuantizedNote,-12,S8,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,24  ;Done
+
+interp QuantizedNote,-12,S9,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,21  ;Done
+
+interp QuantizedNote,-12,S10,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,18  ;Done
+
+interp QuantizedNote,-12,S11,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,15  ;Done
+
+interp QuantizedNote,-12,S12,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,12  ;Done
+
+interp QuantizedNote,-12,S13,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,9  ;Done
+
+interp QuantizedNote,-12,S14,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,6  ;Done
+
+interp QuantizedNote,-12,S15,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+skip  ccr,ccr,Always,3  ;Done
+
+interp QuantizedNote,-12,s16,13
+macints QuantizedNote,0x0,0.010416667,QuantizedNote
+macs 0.0,0.0,0.0,0.0 ; Done
+
+macs 0.0,0.0,0.0,0.0 ; Done
+
+macs CV,QuantizedNote,0.0,0.0
+ 
+end

@@ -1,0 +1,64 @@
+; New microcode
+	name "VCO 1";
+	copyright "Copyright (C) 2009";
+	created "14/04/2009";
+	engine "kX";
+	; comment "";
+	guid "18BAA924-32CD-4942-B4C8-46A19080A576";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+; registers
+  control frequency=0.5
+  control mix=0.5
+  output MainOut
+  temp Negmix
+  temp Square
+  temp Sawtooth
+  temp FilterIntermediate1
+  temp FilterIntermediate2
+  static Delta
+  static Phase
+  static FilterInput
+  static FilterOutput
+  static State1
+  static State2
+  static State3
+  static State4
+; code
+
+	 ;osc
+	 macsn negmix,1.0,mix,1.0
+	 macs   delta, 0.0 , frequency, 0.0001
+	 macw   Phase, Phase, Delta, 1.0
+	 macs   Sawtooth, 0.0, Phase, 0.25
+	 tstneg Square, Phase, 0.25, 0.0
+	 macs   Square,0.0,Square,Mix
+	 macs   Sawtooth,0.0,Sawtooth,negmix
+	 macs   Square,0.0,square,0.25
+	 macs   Sawtooth,0.0,Sawtooth,0.25
+	 acc3   FilterInput,Square,Sawtooth,0.0
+	 
+	 ;filter
+	 ;macs   Filteroutput,State1,FilterInput,0.000483417348170388
+     ;
+	 ;macs   FilterIntermediate1,0.0,FilterInput,0.00193366939268155
+	 ;macs   FilterIntermediate2,0.0,FilterOutput,3.14663259041098
+	 ;acc3   State1,State2,FilterIntermediate1,FilterIntermediate2
+
+	 ;macs   FilterIntermediate1,0.0,FilterInput,0.00290050408902233
+	 ;macs   FilterIntermediate2,0.0,FilterOutput,3.78551568901779
+	 ;acc3   State2,State3,FilterIntermediate1,FilterIntermediate2
+
+	 ;macs   FilterIntermediate1,0.0,FilterInput,0.00193366939268155
+	 ;macs   FilterIntermediate2,0.0,FilterOutput,2.05445406172177
+	 ;acc3   State3,State4,FilterIntermediate1,FilterIntermediate2
+
+	 ;macs   FilterIntermediate1,0.0,FilterInput,0.000483417348170388
+	 ;macs   FilterIntermediate2,0.0,FilterOutput,0.423305640685682
+	 ;acc3   State4,0.0,FilterIntermediate1,FilterIntermediate2
+	 
+	 macs   Mainout,0.0,FilterOut,1.0
+end

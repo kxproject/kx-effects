@@ -1,0 +1,18 @@
+; New microcode
+	name "Kevins Epilog";
+	copyright "Copyright Kevin Horden (c) 2004.";
+	created "01/21/2004";
+	engine "kX";
+	; comment "";
+	guid "046061ca-1133-4c2d-9462-12329870ba7d";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+input RecL
+input RecR
+; code
+macs 0xa,0x0,1.0,RecL
+macs 0xb,0x0,1.0,RecR
+end

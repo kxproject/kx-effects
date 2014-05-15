@@ -1,0 +1,83 @@
+; New microcode
+	name "K-GateCV2";
+	copyright "Copyright (c) 2004.";
+	created "05/14/2009";
+	engine "kX";
+	; comment "";
+	guid "e0016ba0-34b1-4a58-864e-6c96f161ab48";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code                
+
+const zero=0x0
+const IfZero=0x8
+const NotZero=0x100
+const Always=0x7fffffff
+const MidiNote0=-0.59375
+const MidiNote127=0.739583333
+
+
+
+static Oldnote
+static CurrentNote
+static OldMidi
+temp holdNgate
+
+temp Trash
+temp tempCV
+temp tempgate
+
+control MidiIn
+control Hold
+
+output CV
+output Gate
+output Trigger
+output Velocity
+              
+macs   trigger,0.0,Trigger,0.9
+andxor trash,MidiIn,0x00FFFFFF,OldMidi
+skip   ccr,ccr,IfZero,27
+acc3   oldMidi,MidiIn,0.0,0.0              
+              
+andxor trash,midiIn,0x000000f0,0x00000080 ; Note off?
+skip ccr,ccr,ifZero,12
+andxor trash,midiIn,0x000000f0,0x00000090 ; Note on?
+skip ccr,ccr,notZero,22
+
+andxor trash,midiIn,0x00ff0000,zero ; Note on: Zero velocity?
+skip ccr,ccr,ifZero,8
+acc3 Trigger,1.0,0.0,0.0
+acc3 trash,holdNgate,zero,zero ; Velocity not zero - gate on?
+skip ccr,ccr,IfZero,1
+acc3 oldNote,currentNote,zero,zero ; Yes - save current note
+andxor currentNote,midiIn,0x0000ff00,zero ; Move in new note
+andxor Velocity,midiIn,0x00ff0000,zero ; (and velocity)
+acc3 holdNgate,1.0,zero,zero ; Gate on
+skip ccr,ccr,always,12
+
+andxor trash,midiIn,0x0000ff00,oldNote ; Note off: Old note?
+skip ccr,ccr,NotZero,1
+acc3 oldNote,Zero,Zero,0x00008000 ; Yes - mark not valid
+andxor trash,midiIn,0x0000ff00,currentNote ; Current note?
+skip ccr,ccr,NotZero,6
+andxor trash,oldNote,0x0000ff00,0x00008000 ; Yes - old note valid?
+skip ccr,ccr,NotZero,2
+acc3 holdNgate,zero,zero,zero ; Not valid - gate off
+skip ccr,ccr,always,2
+
+acc3 currentNote,oldNote,zero,zero ; Valid - revert to old note
+acc3 Trigger,1.0,0.0,0.0
+acc3 oldNote,0x00008000,zero,zero ; and mark old note invalid
+
+macintw TempCV,0x0,CurrentNote,0x10000 ; Convert current note to cv
+interp  CV,MidiNote0,TempCV,MidiNote127
+
+macs  TempGate,holdNgate,hold,1.0
+macs  gate,0.0,tempGate,0.5
+
+end

@@ -1,0 +1,132 @@
+; New microcode
+	name "K-VCF";
+	copyright "Copyright (c) 2004.";
+	created "05/29/2009";
+	engine "kX";
+	; comment "";
+	guid "c91b1db3-9015-4cd6-8260-e0b538bba576";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+input In
+input CV
+
+output Out
+output Scope
+
+control Q=0.0
+control F=0.0
+ 
+const k0=0.46173
+const k1=0.64322
+const k2=0.41458
+const k3=0.29216
+const k4=0.50003
+const k5=0.50068
+const k6=0.13587
+const k7=0.027
+
+const zero=0.0
+static omask=0xf0000000
+static subomask=0x0fffffff
+const two=0x2
+const four=0x4
+const eight=0x8
+const always=0x7fffffff
+const half=0.5
+
+temp a
+temp b
+temp alpha
+temp fb
+temp error
+temp ff
+temp ccv
+
+static state1
+static state2
+static state3
+static state4
+
+; Alpha and feedback computation
+;
+        interp      ff,-0.5,F,0.5
+        acc3        CCV,ff,CV,0.0
+        limitn      ccv,ccv,ccv,0.6833           ; 20kHz
+        limit      ccv,ccv,ccv,-0.5574          ; 20Hz
+        andxor      a,ccv,subomask,zero
+        macints     a,zero,a,four                ; So sub-octave 0<=a<0.5
+        macs        alpha,k0,a,k1                ; Polynomial
+        macs        b,zero,a,a
+        macs        alpha,alpha,b,k2
+        macs        a,zero,a,b
+        macs        alpha,alpha,a,k3                ; So 0.46173<=alpha<0.923505
+        andxor      a,ccv,omask,zero
+        macs        a,eight,a,eight                ; So 0<=a<=15
+        skip        ccr,ccr,always,a
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        macs        alpha,zero,alpha,half
+        acc3        b,zero,zero,zero                ;  / nops - don't remove!
+        acc3        b,zero,zero,zero                ; /
+        acc3        Scope,alpha,0.0,0.0
+        macs        a,zero,alpha,alpha                ; Compensate alpha and resonance
+        macsn       fb,k4,alpha,k5                ;  for digital departure from
+        macs        fb,fb,a,k6                        ;  analogue behaviour at high
+        macints     fb,zero,fb,two                ;  frequencies
+        macs        fb,zero,fb,Q
+        macsn       alpha,alpha,a,k7
+        
+; Actual filter code
+;
+;
+        interp      state4,state4,alpha,state3
+        interp      state3,state3,alpha,state2
+        interp      state2,state2,alpha,state1
+        macints     a,zero,state4,four
+        macsn       a,In,a,fb
+        interp      state1,state1,alpha,a
+;
+        interp      state4,state4,alpha,state3
+        interp      state3,state3,alpha,state2
+        interp      state2,state2,alpha,state1
+        macints     a,zero,state4,four
+        macsn       a,In,a,fb
+        interp      state1,state1,alpha,a
+;
+        interp      state4,state4,alpha,state3
+        interp      state3,state3,alpha,state2
+        interp      state2,state2,alpha,state1
+        macints     a,zero,state4,four
+        macsn       a,In,a,fb
+        interp      state1,state1,alpha,a
+;
+        interp      state4,state4,alpha,state3
+        interp      state3,state3,alpha,state2
+        interp      state2,state2,alpha,state1
+        macints     a,zero,state4,four
+        macsn       a,In,a,fb
+        interp      state1,state1,alpha,a
+;
+;        ..            (three more indentical blocks)
+
+; Extract output
+;
+        acc3        Out,state4,zero,zero
+
+end

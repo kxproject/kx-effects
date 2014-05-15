@@ -1,0 +1,29 @@
+; New microcode
+	name "K-Width";
+	copyright "Copyright (c) 2004.";
+	created "07/06/2009";
+	engine "kX";
+	; comment "";
+	guid "52b8ad45-e4ed-4fb3-82e2-c237553db452";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+input InL
+input InR
+output OutL
+output OutR
+
+control Width
+
+temp scaledwidth
+
+interp scaledwidth,1.0,Width,-1.0
+
+macs OutL,InL,InR,scaledwidth
+macs OutR,InR,InL,scaledwidth
+
+end

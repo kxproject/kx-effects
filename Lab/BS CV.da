@@ -1,0 +1,25 @@
+; New microcode
+	name "BS CV";
+	copyright "Copyright (c) 2004.";
+	created "04/18/2009";
+	engine "kX";
+	; comment "";
+	guid "a58c416f-1d52-4dbd-837a-046f6c444aad";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+control Note
+control VelocityB0
+control VelocityB1
+output CV
+output Gate
+
+macs CV,Note,0.0,0.0
+macints Gate,0,VelocityB0,10
+macints Gate,Gate,VelocityB1,10
+end

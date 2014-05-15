@@ -1,0 +1,39 @@
+; New microcode
+	name "K-CvShift";
+	copyright "Copyright (c) 2004.";
+	created "05/04/2009";
+	engine "kX";
+	; comment "";
+	guid "abf6f6f9-37d3-4d70-908b-c1c45f8045fe";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+control Octave=0.5
+control Transpose=0.5
+control Tune=0.5
+
+input InCV
+output OutCV
+static TempCV
+temp ScaledOctave
+temp ScaledTranspose
+temp ScaledTune
+
+interp ScaledOctave,-2,Octave,3
+macints ScaledOctave,0x0,0.125,ScaledOctave
+
+interp ScaledTranspose,-12,Transpose,13
+macints ScaledTranspose,0x0,0.010416667,ScaledTranspose
+
+interp ScaledTune,-0.0052083335,Tune,0.0052083335
+
+acc3 TempCV,ScaledOctave,ScaledTranspose,ScaledTune
+
+macs OutCV,InCV,TempCV,1.0
+
+end

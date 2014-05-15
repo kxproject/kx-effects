@@ -1,0 +1,22 @@
+; New microcode
+	name "1Khz Oscilator";
+	copyright "Copyright (c) 2003.";
+	created "11/27/2003";
+	engine "kX";
+	; comment "";
+	guid "bf89a1fb-36f7-493b-9582-506b9ac3eb5e";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+output sine
+static sin
+static cos=1.0
+const delta=0.1308996939
+; code
+ 	 macs 	 sin,  sin,  delta,  cos
+	 macsn 	 cos,  cos,  delta,  sin
+	 macs sine,0,sin,1.0
+
+end

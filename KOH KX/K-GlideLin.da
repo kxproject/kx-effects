@@ -1,0 +1,38 @@
+; New microcode
+	name "K-GlideLin";
+	copyright "Copyright (c) 2004.";
+	created "05/08/2009";
+	engine "kX";
+	; comment "";
+	guid "8780579c-dc51-415d-8667-c7005542a31e";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+ 
+ input In
+ output Out
+ 
+ control Glide
+ 
+ temp    ScaledGlide
+ temp    Inc
+ temp    Step
+ temp    Trash
+ 
+ macs    Trash,Glide,0.0,1.0
+ skip    ccr,ccr,0x100,2
+ macs    out,in,0.0,1.0
+ skip    ccr,ccr,0x7fffffff,7
+ interp  ScaledGlide,0.9,Glide,0.1
+ exp     ScaledGlide,ScaledGlide,7,0
+ exp     ScaledGlide,ScaledGlide,4,0
+ macsn   Step,In,Out,1.0
+ macints Step,0.0,step,0x1000
+ interp  step,-0.00005,step,0.0005
+ macs    Out,Out,Step,ScaledGlide
+ macs    Trash,Trash,Trash,Trash
+end

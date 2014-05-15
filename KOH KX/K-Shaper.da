@@ -1,0 +1,58 @@
+; New microcode
+	name "K-Shaper";
+	copyright "Copyright (c) 2004.";
+	created "07/17/2009";
+	engine "kX";
+	; comment "";
+	guid "f5b930ab-4639-4987-9580-5106f809c25e";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+input In
+output Out
+
+control P_Level=0.5
+control P_Clip=0.0
+control A_Level=0.5
+control N_Clip=0.0
+control N_Level=0.5
+
+temp P
+temp N
+temp A
+temp PL
+temp NL
+temp AL
+       
+interp PL,-1.0,P_Level,1.0
+interp NL,-1.0,N_Level,1.0
+interp AL,-1.0,A_Level,1.0
+       
+macs A,0.0,In,1.0
+macs A,A,P_clip,1.0
+macsn A,A,P_Clip,1.0
+macsn P,in,A,1.0
+
+macs A,0.0,In,1.0
+macsn A,A,N_Clip,1.0
+macs A,A,N_Clip,1.0
+macsn N,In,A,1.0
+
+macs A,0.0,In,1.0
+macsn A,A,N_Clip,1.0
+macs A,A,N_Clip,1.0
+macs A,A,P_clip,1.0
+macsn A,A,P_Clip,1.0
+
+macs A,0.0,A,AL
+macs P,0.0,P,PL
+macs N,0.0,N,NL
+
+
+acc3 Out,P,A,N
+ 
+end

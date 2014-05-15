@@ -1,0 +1,221 @@
+; New microcode
+	name "VCO2Pole";
+	copyright "Copyright (c) 2004.";
+	created "04/14/2009";
+	engine "kX";
+	; comment "";
+	guid "df2be9af-4c1d-4098-88dd-066501f28940";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const Zero=0.0
+const One=1.0
+
+const Quarter=0.25
+
+control Frequency
+control PulseWidth
+control SawShape
+control SqrLevel
+control SawLevel
+
+temp Delta
+temp Diff
+
+static FilterIn
+static FilterOut
+static Phase
+static filteroutput
+static filterinput
+static filterintermediate1
+static filterintermediate2
+static state1
+static state2
+static Offset
+static ShapeNormalize
+static Sawtooth
+static Square
+static Triangle
+
+input cvin
+
+output MainOutput
+const FilterB1 = 0.0045144297182559967000
+const FilterB2 = 0.0090288594365119934000
+const FilterB3 = 0.0045144297182559967000
+const FilterA2 = 0.0693267993628978730000
+const FilterA3 = -0.0248845182359218600000
+
+const FilterFactor=16
+
+;const cv2deltak1=0.318147143048582
+;const cv2deltak2=0.752819169984960
+
+const  aquarter=0.25
+static omask=0xf0000000
+static subomask=0x0fffffff
+static four=0x4
+static eight=0x8
+const half=0.5
+const k0=0.293301307822602
+const k1=0.408589772592175
+const k2=0.263353125733898
+const k3=0.185587841332716
+
+temp a
+temp b
+
+
+output scopeout
+
+        andxor      a,CVin,subomask,zero
+        macints     a,zero,a,four                ; So sub-octave 0<=a<0.5
+        macs        delta,k0,a,k1                ; Polynomial
+        macs        b,zero,a,a
+        macs        delta,delta,b,k2
+        macs        a,zero,a,b
+        macs        delta,delta,a,k3        ; So 0.293333<=delta<0.586666666
+        
+        andxor      a,cvin,omask,zero
+        macs        a,eight,a,eight        ; So 0<=a<=15    
+        
+        skip        ccr,ccr,0x7fffffff,a
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        acc3        a,zero,zero,zero        ; (nop)
+
+
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Wave Shaper
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,PulseWidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macs   Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+macs FilterInput,Zero,Square,SqrLevel
+macsn Filterinput,FilterInput,Triangle,Sawlevel
+
+;Filter
+macs    Filteroutput,State1,FilterInput,FilterB1
+macints Filteroutput,zero,Filteroutput,FilterFactor
+macs    FilterIntermediate1,zero,FilterInput,FilterB2
+macs    FilterIntermediate2,zero,FilterOutput,FilterA2
+acc3    State1,State2,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB3
+macs    FilterIntermediate2,zero,FilterOutput,FilterA3
+acc3    State2,zero,FilterIntermediate1,FilterIntermediate2
+	 
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Wave Shaper
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,PulseWidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macs   Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+macs FilterInput,Zero,Square,SqrLevel
+macsn Filterinput,FilterInput,Triangle,Sawlevel
+
+;Filter
+macs    Filteroutput,State1,FilterInput,FilterB1
+macints Filteroutput,zero,Filteroutput,FilterFactor
+macs    FilterIntermediate1,zero,FilterInput,FilterB2
+macs    FilterIntermediate2,zero,FilterOutput,FilterA2
+acc3    State1,State2,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB3
+macs    FilterIntermediate2,zero,FilterOutput,FilterA3
+acc3    State2,zero,FilterIntermediate1,FilterIntermediate2
+	 
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Wave Shaper
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,PulseWidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macs   Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+macs FilterInput,Zero,Square,SqrLevel
+macsn Filterinput,FilterInput,Triangle,Sawlevel
+
+;Filter
+macs    Filteroutput,State1,FilterInput,FilterB1
+macints Filteroutput,zero,Filteroutput,FilterFactor
+macs    FilterIntermediate1,zero,FilterInput,FilterB2
+macs    FilterIntermediate2,zero,FilterOutput,FilterA2
+acc3    State1,State2,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB3
+macs    FilterIntermediate2,zero,FilterOutput,FilterA3
+acc3    State2,zero,FilterIntermediate1,FilterIntermediate2
+	 
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Wave Shaper
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,PulseWidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macs   Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+macs FilterInput,Zero,Square,SqrLevel
+macsn Filterinput,FilterInput,Triangle,Sawlevel
+
+;Filter
+macs    Filteroutput,State1,FilterInput,FilterB1
+macints Filteroutput,zero,Filteroutput,FilterFactor
+macs    FilterIntermediate1,zero,FilterInput,FilterB2
+macs    FilterIntermediate2,zero,FilterOutput,FilterA2
+acc3    State1,State2,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB3
+macs    FilterIntermediate2,zero,FilterOutput,FilterA3
+acc3    State2,zero,FilterIntermediate1,FilterIntermediate2
+	 
+
+
+macs MainOutput,Zero,FilterOutput,quarter 
+
+end

@@ -1,0 +1,25 @@
+; New microcode
+	name "K-Glide";
+	copyright "Copyright (c) 2004.";
+	created "05/08/2009";
+	engine "kX";
+	; comment "";
+	guid "0de2dfe7-2bf3-4cd4-8b6b-6c3e3575ce6d";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+ 
+ input In
+ output Out
+ 
+ control Glide
+ 
+ temp    TempGlide
+ interp  TempGlide,0.0,Glide,0.01
+ interp   Out,Out,TempGlide,In
+ 
+end

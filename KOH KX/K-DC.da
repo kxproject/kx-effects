@@ -1,0 +1,21 @@
+; New microcode
+	name "K-DC";
+	copyright "Copyright (c) 2004.";
+	created "05/30/2010";
+	engine "kX";
+	; comment "";
+	guid "f2338a6f-fb1c-4365-af74-8de5224952be";
+	; -- generated GUID
+
+
+output out
+control DC
+
+macs out,dc,0.0,0.0
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+end

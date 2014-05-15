@@ -1,0 +1,30 @@
+; New microcode
+	name "K-SH";
+	copyright "Copyright (c) 2004.";
+	created "05/28/2009";
+	engine "kX";
+	; comment "";
+	guid "96d6387f-db6d-4902-a10d-357ac4e717f9";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+input In
+input Trig
+output Out
+
+static Hold
+
+temp dummy
+
+macsn dummy,Trig,0.5,1.0
+skip  ccr,ccr,0x180,2
+macs  out,hold,0.0,0.0
+skip  ccr,ccr,0x7FFFFFFF,1
+macs  Hold,In,0.0,0.0
+macs 0.0,0.0,0.0,0.0
+end

@@ -1,0 +1,32 @@
+; New microcode
+	name "K-Wheel";
+	copyright "Copyright (c) 2004.";
+	created "08/05/2009";
+	engine "kX";
+	; comment "";
+	guid "81f5ebc3-57ab-42f7-852e-861e56148129";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const   zero=0.0
+const   Octave=0.125
+
+input   In
+output  Out
+
+control Wheel
+control Range
+
+temp    ScaledRange
+temp    ScaledIn
+
+interp  ScaledRange,zero,range,Octave
+interp  ScaledIn,zero,In,ScaledRange
+macs    Out,0.0,ScaledIn,Wheel
+
+end

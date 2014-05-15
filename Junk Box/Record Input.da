@@ -1,0 +1,17 @@
+; New microcode
+	name "Recording Input";
+	copyright "Copyright (c) 2003";
+	created "11/25/2003";
+	engine "kX";
+	; comment "";
+	guid "1fb75e1c-d3ff-44a9-8b95-f18e7040eb1d";
+	; -- generated GUID
+ 
+
+ input recL
+ input recR
+
+	 macs 	 KX_OUT(0xb),  0x0,  recL,  1.0;
+	 macs 	 KX_OUT(0xb),  0x0,  recR,  1.0;
+
+end

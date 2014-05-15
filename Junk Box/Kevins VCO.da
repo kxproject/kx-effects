@@ -1,0 +1,182 @@
+; New microcode
+	name "Kevins VCO";
+	copyright "Copyright (c) 2003.";
+	created "11/30/2003";
+	engine "kX";
+	; comment "";
+	guid "06c644b7-4c5a-4840-b345-d9ef635d5049";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+; registers
+  const alpha=0.122694231
+  control frequency=0.5
+  output Sawtooth
+  output Square
+  static delta
+  static acc
+  static diff
+  static counter
+; code
+	 macs   delta, 0.0 , frequency, 0.1
+	 macw   counter, counter, Delta, 1.0
+	 macs  diff,counter,acc,-1.0
+	 macs   acc,acc,diff,alpha
+	 macs  diff,counter,acc,-1.0
+	 macs   acc,acc,diff,alpha
+	 macs  diff,counter,acc,-1.0
+	 macs   acc,acc,diff,alpha
+	 macs  diff,counter,acc,-1.0
+	 macs   acc,acc,diff,alpha
+	 macs  diff,counter,acc,-1.0
+	 macs   acc,acc,diff,alpha
+	 macs  diff,counter,acc,-1.0
+	 macs   acc,acc,diff,alpha
+	 macs  diff,counter,acc,-1.0
+	 macs   acc,acc,diff,alpha
+	 macs  diff,counter,acc,-1.0
+	 macs   acc,acc,diff,alpha
+	 macs   Sawtooth, 0.0, acc, 0.25 
+	 macs   square, 0.0, counter,0.25
+end
+
+
+; New microcode
+	name "BS VCO 1";
+	copyright "Copyright (c) 2004.";
+	created "04/14/2009";
+	engine "kX";
+	; comment "";
+	guid "668f1c1f-2ef1-4657-a86b-439fb8eafb2d";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const Zero=0.0
+const One=1.0
+;const Alpha=0.063353978763404
+
+
+
+
+const Quarter=0.25
+
+control Frequency
+control Alpha
+control Feedback
+temp Delta
+temp Diff
+static NewAlpha
+static FilterIn
+static FilterOut
+static Phase
+static Filter1
+static Filter2
+static Filter3
+static Filter4
+static Filter5
+static Filter6
+static Filter7
+static Filter8
+output MainOutput
+
+macs Delta,0.001,Frequency,0.00005
+macs NewAlpha,Zero,Alpha,0.5
+
+macw   Phase,     Phase,     Delta,     One
+macsn  Diff,     Phase,     Filter1, One
+macs   Filter1, Filter1, diff,     NewAlpha
+macsn  Diff,     Filter1, Filter2, One
+macs   Filter2, Filter2, diff,     NewAlpha
+macsn  Diff,     Filter2, Filter3, One
+macs   Filter3, Filter3, diff,     NewAlpha
+macsn  Diff,     Filter3, Filter4, One
+macs   Filter4, Filter4, diff,     NewAlpha
+
+
+macw   Phase,     Phase,     Delta,     One
+macsn  Diff,     Phase,     Filter1, One
+macs   Filter1, Filter1, diff,     NewAlpha
+macsn  Diff,     Filter1, Filter2, One
+macs   Filter2, Filter2, diff,     NewAlpha
+macsn  Diff,     Filter2, Filter3, One
+macs   Filter3, Filter3, diff,     NewAlpha
+macsn  Diff,     Filter3, Filter4, One
+macs   Filter4, Filter4, diff,     NewAlpha
+
+
+macw   Phase,     Phase,     Delta,     One
+macsn  Diff,     Phase,     Filter1, One
+macs   Filter1, Filter1, diff,     NewAlpha
+macsn  Diff,     Filter1, Filter2, One
+macs   Filter2, Filter2, diff,     NewAlpha
+macsn  Diff,     Filter2, Filter3, One
+macs   Filter3, Filter3, diff,     NewAlpha
+macsn  Diff,     Filter3, Filter4, One
+macs   Filter4, Filter4, diff,     NewAlpha
+
+
+macw   Phase,     Phase,     Delta,     One
+macsn  Diff,     Phase,     Filter1, One
+macs   Filter1, Filter1, diff,     NewAlpha
+macsn  Diff,     Filter1, Filter2, One
+macs   Filter2, Filter2, diff,     NewAlpha
+macsn  Diff,     Filter2, Filter3, One
+macs   Filter3, Filter3, diff,     NewAlpha
+macsn  Diff,     Filter3, Filter4, One
+macs   Filter4, Filter4, diff,     NewAlpha
+
+
+macw   Phase,     Phase,     Delta,     One
+macsn  Diff,     Phase,     Filter1, One
+macs   Filter1, Filter1, diff,     NewAlpha
+macsn  Diff,     Filter1, Filter2, One
+macs   Filter2, Filter2, diff,     NewAlpha
+macsn  Diff,     Filter2, Filter3, One
+macs   Filter3, Filter3, diff,     NewAlpha
+macsn  Diff,     Filter3, Filter4, One
+macs   Filter4, Filter4, diff,     NewAlpha
+
+
+macw   Phase,     Phase,     Delta,     One
+macsn  Diff,     Phase,     Filter1, One
+macs   Filter1, Filter1, diff,     NewAlpha
+macsn  Diff,     Filter1, Filter2, One
+macs   Filter2, Filter2, diff,     NewAlpha
+macsn  Diff,     Filter2, Filter3, One
+macs   Filter3, Filter3, diff,     NewAlpha
+macsn  Diff,     Filter3, Filter4, One
+macs   Filter4, Filter4, diff,     NewAlpha
+
+
+macw   Phase,     Phase,     Delta,     One
+macsn  Diff,     Phase,     Filter1, One
+macs   Filter1, Filter1, diff,     NewAlpha
+macsn  Diff,     Filter1, Filter2, One
+macs   Filter2, Filter2, diff,     NewAlpha
+macsn  Diff,     Filter2, Filter3, One
+macs   Filter3, Filter3, diff,     NewAlpha
+macsn  Diff,     Filter3, Filter4, One
+macs   Filter4, Filter4, diff,     NewAlpha
+
+
+macw   Phase,     Phase,     Delta,     One
+macsn  Diff,     Phase,     Filter1, One
+macs   Filter1, Filter1, diff,     NewAlpha
+macsn  Diff,     Filter1, Filter2, One
+macs   Filter2, Filter2, diff,     NewAlpha
+macsn  Diff,     Filter2, Filter3, One
+macs   Filter3, Filter3, diff,     NewAlpha
+macsn  Diff,     Filter3, Filter4, One
+macs   Filter4, Filter4, diff,     NewAlpha
+
+
+macs MainOutput,Zero,Filter4,Quarter 
+
+end

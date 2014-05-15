@@ -1,0 +1,151 @@
+; New microcode
+	name "BS VCO 1";
+	copyright "Copyright (c) 2004.";
+	created "04/14/2009";
+	engine "kX";
+	; comment "";
+	guid "668f1c1f-2ef1-4657-a86b-439fb8eafb2d";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const Zero=0.0
+const One=1.0
+;const Alpha=0.063353978763404
+
+
+
+
+const Quarter=0.25
+
+control Frequency
+temp Delta
+temp Diff
+static NewAlpha
+static FilterIn
+static FilterOut
+static Phase
+static Filter1
+static Filter2
+static Filter3
+static Filter4
+static Filter5
+static Filter6
+static Filter7
+static Filter8
+static filteroutput
+static filterinput
+static filterintermediate1
+static filterintermediate2
+static state1
+static state2
+static state3
+static state4
+output MainOutput
+const FilterB1= 0.0000302135013043880460
+const FilterB2= 0.0001208544708788394900
+const FilterB3= 0.0001812814734876155900
+const FilterB4= 0.0001208544708788394900
+const FilterB5= 0.0000302135013043880460
+const FilterA2= 0.1966645368374884100000
+const FilterA3=-0.2365947305224835900000
+const FilterA4= 0.1284033786505460700000
+const FilterA5=-0.0264566023834049700000
+const FilterFactor=16
+
+
+
+
+macs Delta,zero,Frequency,0.025
+
+macw   Phase,     Phase,     Delta,     One
+macs   Filterinput,zero,phase,one
+
+
+;filter
+macs    Filteroutput,State1,FilterInput,FilterB1
+macints Filteroutput,zero,Filteroutput,FilterFactor
+macs    FilterIntermediate1,zero,FilterInput,FilterB2
+macs    FilterIntermediate2,zero,FilterOutput,FilterA2
+acc3    State1,State2,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB3
+macs    FilterIntermediate2,zero,FilterOutput,FilterA3
+acc3    State2,State3,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB4
+macs    FilterIntermediate2,zero,FilterOutput,FilterA4
+acc3    State3,State4,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB5
+macs    FilterIntermediate2,zero,FilterOutput,FilterA5
+acc3    State4,zero,FilterIntermediate1,FilterIntermediate2
+	 
+macw   Phase,     Phase,     Delta,     One
+macs   Filterinput,zero,phase,one
+
+
+;filter
+macs    Filteroutput,State1,FilterInput,FilterB1
+macints Filteroutput,zero,Filteroutput,FilterFactor
+macs    FilterIntermediate1,zero,FilterInput,FilterB2
+macs    FilterIntermediate2,zero,FilterOutput,FilterA2
+acc3    State1,State2,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB3
+macs    FilterIntermediate2,zero,FilterOutput,FilterA3
+acc3    State2,State3,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB4
+macs    FilterIntermediate2,zero,FilterOutput,FilterA4
+acc3    State3,State4,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB5
+macs    FilterIntermediate2,zero,FilterOutput,FilterA5
+acc3    State4,zero,FilterIntermediate1,FilterIntermediate2
+	 
+
+macw   Phase,     Phase,     Delta,     One
+macs   Filterinput,zero,phase,one
+
+
+;filter
+macs    Filteroutput,State1,FilterInput,FilterB1
+macints Filteroutput,zero,Filteroutput,FilterFactor
+macs    FilterIntermediate1,zero,FilterInput,FilterB2
+macs    FilterIntermediate2,zero,FilterOutput,FilterA2
+acc3    State1,State2,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB3
+macs    FilterIntermediate2,zero,FilterOutput,FilterA3
+acc3    State2,State3,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB4
+macs    FilterIntermediate2,zero,FilterOutput,FilterA4
+acc3    State3,State4,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB5
+macs    FilterIntermediate2,zero,FilterOutput,FilterA5
+acc3    State4,zero,FilterIntermediate1,FilterIntermediate2
+	 
+
+macw   Phase,     Phase,     Delta,     One
+macs   Filterinput,zero,phase,one
+
+
+;filter
+macs    Filteroutput,State1,FilterInput,FilterB1
+macints Filteroutput,zero,Filteroutput,FilterFactor
+macs    FilterIntermediate1,zero,FilterInput,FilterB2
+macs    FilterIntermediate2,zero,FilterOutput,FilterA2
+acc3    State1,State2,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB3
+macs    FilterIntermediate2,zero,FilterOutput,FilterA3
+acc3    State2,State3,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB4
+macs    FilterIntermediate2,zero,FilterOutput,FilterA4
+acc3    State3,State4,FilterIntermediate1,FilterIntermediate2
+macs    FilterIntermediate1,zero,FilterInput,FilterB5
+macs    FilterIntermediate2,zero,FilterOutput,FilterA5
+acc3    State4,zero,FilterIntermediate1,FilterIntermediate2
+	 
+
+
+macs MainOutput,Zero,FilterOutput,0.125 
+
+end

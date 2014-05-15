@@ -1,0 +1,23 @@
+; New microcode
+	name "K-Ring";
+	copyright "Copyright (c) 2004.";
+	created "06/15/2009";
+	engine "kX";
+	; comment "";
+	guid "42447a24-67c6-4edf-a245-58c563052e08";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+input In1
+input In2
+
+output Out
+
+macs Out,0.0,In1,In2
+
+end

@@ -1,0 +1,30 @@
+; New microcode
+	name "SimpleVCO";
+	copyright "Copyright (c) 2004.";
+	created "04/14/2009";
+	engine "kX";
+	; comment "";
+	guid "34fa42f9-20ea-4ff3-94d8-6b150e2e2bb7";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const Zero=0.0
+const One=1.0
+const Alpha=0.649080192821588
+control Frequency
+temp Delta
+static Phase
+static Sawtooth
+output  MainOutput
+
+macs Delta,Zero,Frequency,0.1
+macw Phase,Phase,Delta,One
+macs MainOutput,Zero,Phase,0.25
+ 
+
+end

@@ -1,0 +1,30 @@
+; New microcode
+	name "K-Switch";
+	copyright "Copyright (c) 2004.";
+	created "05/20/2009";
+	engine "kX";
+	; comment "";
+	guid "b71e491b-440b-4f5e-9310-18445d3e6aa3";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+control switch=0.0
+input In1
+input In2
+output Out1
+output Out2
+
+macsn 0.0,switch,0.5,1.0
+skip ccr,ccr,0x4,3
+macs Out1,In1,0.0,0.0
+macs Out2,In2,0.0,0.0
+skip ccr,ccr,0x7fffffff,2 
+macs Out1,In2,0.0,0.0
+macs Out2,In1,0.0,0.0
+acc3 0.0,0.0,0.0,0.0
+end

@@ -1,0 +1,23 @@
+; New microcode
+	name "Kevins CV";
+	copyright "Copyright (c) 2003.";
+	created "11/30/2003";
+	engine "kX";
+	; comment "";
+	guid "91e6b467-cdd4-40a1-a9b3-35e5459f691a";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+; registers
+  temp  tmp
+  control MidiNoteIn
+  control MidiVelIn
+  output CV
+  output gate
+; code
+  interp tmp,0x0,MidiNoteIn,0x7f000000;
+  macs   CV,0x0,MidiNoteIn,0x80;
+  macs   gate,0x0,MidiVelIn,1.0
+end

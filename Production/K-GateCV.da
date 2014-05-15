@@ -1,0 +1,75 @@
+; New microcode
+	name "K-GateCV";
+	copyright "Copyright (c) 2004.";
+	created "05/14/2009";
+	engine "kX";
+	; comment "";
+	guid "496584c4-bb56-4bcf-906b-39d9a90cdd3a";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const zero=0x0
+const IfZero=0x8
+const NotZero=0x100
+const Always=0x7fffffff
+const MidiNote0=-0.59375
+const MidiNote127=0.729166666
+
+
+static Oldnote
+static CurrentNote
+static OldMidi
+
+temp Trash
+temp tempCV
+
+control MidiIn
+
+output CV
+output Gate
+output Velocity
+              
+andxor trash,MidiIn,0xFFFFFFFF,OldMidi
+skip   ccr,ccr,IfZero,28
+acc3   oldMidi,MidiIn,0.0,0.0              
+              
+andxor trash,midiIn,0x000000ff,0x00000080 ; Note off?
+skip ccr,ccr,ifZero,11
+andxor trash,midiIn,0x000000ff,0x00000090 ; Note on?
+skip ccr,ccr,notZero,20
+
+andxor trash,midiIn,0x00ff0000,zero ; Note on: Zero velocity?
+skip ccr,ccr,ifZero,7
+acc3 trash,gate,zero,zero ; Velocity not zero - gate on?
+skip ccr,ccr,IfZero,1
+acc3 oldNote,currentNote,zero,zero ; Yes - save current note
+andxor currentNote,midiIn,0x0000ff00,zero ; Move in new note
+andxor Velocity,midiIn,0x00ff0000,zero ; (and velocity)
+acc3 gate,0.5,zero,zero ; Gate on
+skip ccr,ccr,always,11
+
+andxor trash,midiIn,0x0000ff00,oldNote ; Note off: Old note?
+skip ccr,ccr,NotZero,1
+acc3 oldNote,Zero,Zero,0x00008000 ; Yes - mark not valid
+andxor trash,midiIn,0x0000ff00,currentNote ; Current note?
+skip ccr,ccr,NotZero,6
+andxor trash,oldNote,0x0000ff00,0x00008000 ; Yes - old note valid?
+skip ccr,ccr,NotZero,2
+acc3 gate,zero,zero,zero ; Not valid - gate off
+skip ccr,ccr,always,2
+
+acc3 currentNote,oldNote,zero,zero ; Valid - revert to old note
+acc3 oldNote,0x00008000,zero,zero ; and mark old note invalid
+
+macintw TempCV,0x0,CurrentNote,0x10000 ; Convert current note to cv
+interp  CV,MidiNote0,TempCV,MidiNote127
+macints Velocity,0.0,CurrentNote,0x4000
+
+acc3  Trash,0.0,0.0,0.0   ;NOOP
+
+end

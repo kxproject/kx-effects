@@ -1,0 +1,3 @@
+tips:
+
+- delete false plugin registrations from registry in "hkey_current_user/software/kx/plugins.."

@@ -1,0 +1,77 @@
+; New microcode
+	name "K-ADSR";
+	copyright "Copyright (c) 2004.";
+	created "05/21/2009";
+	engine "kX";
+	; comment "";
+	guid "88815463-3da1-44f7-99d3-53d1b6547c14";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const Z=0x8
+const NZ=0x100
+const GT=0x180
+const LT=0x4
+const SAT=0x10
+const Always=0x7fffffff
+
+input Gate
+input Trigger
+
+output Out
+
+control Attack
+control Decay
+control Sustain
+control Release
+
+static Envelope
+static AttackDone
+
+temp AttackAlpha
+temp DecayAlpha
+temp SustainLevel
+temp ReleaseAlpha
+
+
+interp AttackAlpha,1.0,Attack,0.3
+interp DecayAlpha,1.0,Decay,0.3
+interp ReleaseAlpha,1.0,Release,0.3
+interp SustainLevel,0.0,Sustain,0.95
+                                  
+exp    AttackAlpha,AttackAlpha,15,0                                  
+exp    DecayAlpha,DecayAlpha,15,0                                  
+exp    ReleaseAlpha,ReleaseAlpha,15,0                                  
+
+macs   AttackAlpha,0.0,AttackAlpha,0.0095941                                  
+macs   DecayAlpha,0.0,DecayAlpha,0.0095941                                  
+macs   ReleaseAlpha,0.0,ReleaseAlpha,0.0095941                                  
+                                  
+macsn    0.0,gate,1.0,0.25 ;Gate?
+skip     ccr,ccr,GT,3      ;.ATTACK 
+
+interp   Out,Out,ReleaseAlpha,0.0 ;.RELEASE
+macs     AttackDone,0.0,0.0,0.0
+skip     ccr,ccr,Always,8    ;.END
+
+macs     0.0,attackdone,0.0,0.0   ;.ATTACK
+skip     ccr,ccr,GT,5             ;.DECAY
+interp   Out,Out,AttackAlpha,0.95 
+macsn    0.0,out,0.94,1.0
+skip     ccr,ccr,LT,1   ;Attack OK?
+macs     AttackDone,1.0,0.0,0.0
+skip     ccr,ccr,Always,1    ;.END
+
+interp   out,out,DecayAlpha,SustainLevel ;.DECAY
+
+macsn    0.0,Trigger,0.5,1.0  ;.END
+skip     ccr,ccr,LT,2         ;DONE
+macs     AttackDone,0.0,0.0,0.0
+macs     Out,0.0,0.0,0.0
+macs     0.0,0.0,0.0,0.0      ;.DONE
+end

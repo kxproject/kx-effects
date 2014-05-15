@@ -1,0 +1,76 @@
+; New microcode
+	name "K-PitchShiftInv";
+	copyright "Copyright (c) 2004.";
+	created "07/06/2009";
+	engine "kX";
+	; comment "";
+	guid "b7a2e817-58f7-45c9-bb43-926ad857bc5d";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code                   o
+
+
+itramsize 2400
+
+; code
+
+control Pitch=0.75
+control Level=0.0
+
+input In
+output Out
+
+static saw1
+static saw2
+static tri1
+static tri2
+
+temp ScaledPitch
+temp count1
+temp count2
+temp scaledSaw1
+temp ScaledSaw2
+temp scaledTri1
+temp scaledTri2
+temp shift1
+temp shift2
+temp shifted
+
+idelay write w1 at 0
+idelay read r1 at 0
+idelay write w2 at 1200
+idelay read r2 at 1200
+
+interp scaledpitch,0.0,Pitch,1.0        
+
+
+macw Saw1,saw1,0.000025,1.0
+macw Saw2,saw1,1.0,1.0
+tstneg Tri2,Saw1,Saw1,0.0
+tstneg Tri1,Saw2,Saw2,0.0
+
+macs ScaledSaw1,0.0,Saw1,scaledPitch
+macs ScaledSaw2,0.0,Saw2,scaledPitch
+macs ScaledTri1,0.0,Tri1,scaledPitch
+macs ScaledTri2,0.0,Tri2,scaledPitch
+        
+macints count1,0x120000,0x0,0x0
+macs count1,count1,0x110000,ScaledSaw1
+macints &r1,&w1,count1,0x1
+macs w1,in,0.0,0.0
+macs Shift1,0.0,R1,Tri1
+
+macints count2,0x120000,0x0,0x0
+macs count2,count2,0x110000,ScaledSaw2
+macints &r2,&w2,count2,0x1
+macs w2,in,0.0,0.0
+macs Shift2,0.0,R2,Tri2
+
+acc3 shifted,shift1,shift2,0.0
+
+interp out,in,level,Shifted
+end

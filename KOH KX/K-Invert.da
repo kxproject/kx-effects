@@ -1,0 +1,21 @@
+; New microcode
+	name "K-Invert";
+	copyright "Copyright (c) 2004.";
+	created "06/15/2009";
+	engine "kX";
+	; comment "";
+	guid "d53052e8-a464-4142-b34e-1a8952b9a82e";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+input In
+output Out
+
+macs out,0.0,in,-1.0
+
+end

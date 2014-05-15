@@ -1,0 +1,69 @@
+; new microcode
+	name "kevins vco 2";
+	copyright "copyright (c) 2003.";
+	created "11/30/2003";
+	engine "kx";
+	; comment "";
+	guid "7da89297-7583-4290-b877-577ebe35deb7";
+	; -- generated guid
+
+
+; itramsize 0
+; xtramsize 0
+; registers
+input note
+static saw
+const semitone=0.94387431268169349664191315666753
+;const C8=0x594D30D3
+;const c7=0x2CA69869
+;const c6=0x16534C34
+;const c5=0x0B29A61A
+;const c4=0x0594d30D
+;const c3=0x02Ca6987
+const C2=0x016534c3
+temp noteshift
+temp delta
+temp test
+output sawtooth
+; code
+  limitl     noteshift,note,note,0x48
+  macs       delta,0x0,C2,1.0
+  macints    test,noteshift,11,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,10,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,9,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,8,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,7,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,6,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,5,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,4,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,3,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,2,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,0x1,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macints    test,noteshift,0,-1
+  skip       ccr,ccr,0x180,0x1
+  macs       delta,0x0,delta,semitone
+  macw       saw,saw,delta,1.0
+  macs       sawtooth,0.0,saw,1.0
+end

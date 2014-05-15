@@ -1,0 +1,48 @@
+; New microcode
+	name "K-Flanger";
+	copyright "Copyright (c) 2004.";
+	created "06/23/2009";
+	engine "kX";
+	; comment "";
+	guid "6b4d7285-ccb9-457b-aebc-8ddd3f508020";
+	; -- generated GUID
+
+
+; itramsize 0
+xtramsize 1200
+
+xdelay write w at 0x1
+xdelay read r at 0x1
+
+input In
+output Out
+
+control Rate=0.75 ; Initial slider position is at 6.6 Hz
+control Feedback=0.75
+control Depth=0.5
+
+static tri=0.0   ; Counter for triangle wave
+static dir=1.0   ; direction of wave 
+temp RateScaled
+temp samples
+temp mod
+; Code
+; LFO
+exp     Ratescaled,Rate,31,0 
+interp  RateScaled,0.0000001,Ratescaled,0.0005 ; scale the slider control
+macs    tri, tri,RateScaled,dir ; increment/decrement the tri counter
+skip   ccr, ccr, 0x200, 0x1     ; if there is a saturation then
+macsn   dir, 0.0, dir, 1.0	     ; inversion.
+macs    mod,0.0,tri,Depth
+                     
+; Flange
+macints samples,0x120000,0x0,0x0
+macs samples,samples,0x100000,mod
+macints &r,&w,samples,0x1
+macs out,in,r,Feedback
+macs w,out,0.0,0.0
+
+
+
+
+end

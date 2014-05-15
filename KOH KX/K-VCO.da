@@ -1,0 +1,400 @@
+; New microcode
+	name "K-VCO";
+	copyright "Copyright (c) 2004.";
+	created "04/14/2009";
+	engine "kX";
+	; comment "";
+	guid "3370f56d-84b0-4565-a218-02bfff12c96e";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const Zero=0.0
+const One=1.0
+
+const Quarter=0.25
+
+control Waveform
+control Shape
+
+temp Delta
+temp Diff
+temp sawshape
+temp Pulsewidth
+
+static FilterIn
+static FilterOut
+static Phase
+static filteroutput
+static filterinput
+static F1
+static F2
+static F3
+static F4
+static F5
+static F6
+static state1
+static state2
+static state3
+static state4
+static Offset
+static ShapeNormalize
+static Sawtooth
+static Square
+static Triangle
+static lastsync
+
+input CV
+input Sync
+input PWM
+
+output Out
+
+const filteralpha=0.05
+
+
+;const cv2deltak1=0.318147143048582
+;const cv2deltak2=0.752819169984960
+
+const  aquarter=0.25
+static omask=0xf0000000
+static subomask=0x0fffffff
+static four=0x4
+static eight=0x8
+const half=0.5
+const k0=0.293301307822602
+const k1=0.408589772592175
+const k2=0.263353125733898
+const k3=0.185587841332716
+
+temp a
+temp b
+
+
+        andxor      a,CV,subomask,zero
+        macints     a,zero,a,four                ; So sub-octave 0<=a<0.5
+        macs        delta,k0,a,k1                ; Polynomial
+        macs        b,zero,a,a
+        macs        delta,delta,b,k2
+        macs        a,zero,a,b
+        macs        delta,delta,a,k3        ; So 0.293333<=delta<0.586666666
+        
+        andxor      a,CV,omask,zero
+        macs        a,eight,a,eight        ; So 0<=a<=15    
+        
+        skip        ccr,ccr,0x7fffffff,a
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        macs        delta,zero,delta,half
+        acc3        a,zero,zero,zero        ; (nop)
+
+acc3    Pulsewidth,Shape,PWM,0.0 
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Sync
+andxor lastsync,lastsync,sync,zero
+skip   ccr,ccr,0x8,1
+acc3   Phase,zero,zero,zero
+andxor lastsync,sync,0x80000000,0x80000000
+
+;Wave Shaper
+interp sawshape,1.0,Pulsewidth,0.0
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,Pulsewidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macsn  Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+interp FilterInput,Square,Waveform,Triangle
+
+;Filter
+interp F1,F1,filteralpha,FilterInput
+interp F2,F2,filteralpha,F1
+interp F3,F3,filteralpha,F2
+interp F4,F4,filteralpha,F3
+interp F5,F5,filteralpha,F4
+interp FilterOutput,FilterOutput,filteralpha,F5
+
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Sync
+andxor lastsync,lastsync,sync,zero
+skip   ccr,ccr,0x8,1
+acc3   Phase,zero,zero,zero
+andxor lastsync,sync,0x80000000,0x80000000
+
+;Wave Shaper
+interp sawshape,1.0,Pulsewidth,0.0
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,Pulsewidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macsn  Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+interp FilterInput,Square,Waveform,Triangle
+
+;Filter
+interp F1,F1,filteralpha,FilterInput
+interp F2,F2,filteralpha,F1
+interp F3,F3,filteralpha,F2
+interp F4,F4,filteralpha,F3
+interp F5,F5,filteralpha,F4
+interp FilterOutput,FilterOutput,filteralpha,F5
+
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Sync
+andxor lastsync,lastsync,sync,zero
+skip   ccr,ccr,0x8,1
+acc3   Phase,zero,zero,zero
+andxor lastsync,sync,0x80000000,0x80000000
+
+;Wave Shaper
+interp sawshape,1.0,Pulsewidth,0.0
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,Pulsewidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macsn  Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+interp FilterInput,Square,Waveform,Triangle
+
+;Filter
+interp F1,F1,filteralpha,FilterInput
+interp F2,F2,filteralpha,F1
+interp F3,F3,filteralpha,F2
+interp F4,F4,filteralpha,F3
+interp F5,F5,filteralpha,F4
+interp FilterOutput,FilterOutput,filteralpha,F5
+
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Sync
+andxor lastsync,lastsync,sync,zero
+skip   ccr,ccr,0x8,1
+acc3   Phase,zero,zero,zero
+andxor lastsync,sync,0x80000000,0x80000000
+
+;Wave Shaper
+interp sawshape,1.0,Pulsewidth,0.0
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,Pulsewidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macsn  Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+interp FilterInput,Square,Waveform,Triangle
+
+;Filter
+interp F1,F1,filteralpha,FilterInput
+interp F2,F2,filteralpha,F1
+interp F3,F3,filteralpha,F2
+interp F4,F4,filteralpha,F3
+interp F5,F5,filteralpha,F4
+interp FilterOutput,FilterOutput,filteralpha,F5
+
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Sync
+andxor lastsync,lastsync,sync,zero
+skip   ccr,ccr,0x8,1
+acc3   Phase,zero,zero,zero
+andxor lastsync,sync,0x80000000,0x80000000
+
+;Wave Shaper
+interp sawshape,1.0,Pulsewidth,0.0
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,Pulsewidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macsn  Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+interp FilterInput,Square,Waveform,Triangle
+
+;Filter
+interp F1,F1,filteralpha,FilterInput
+interp F2,F2,filteralpha,F1
+interp F3,F3,filteralpha,F2
+interp F4,F4,filteralpha,F3
+interp F5,F5,filteralpha,F4
+interp FilterOutput,FilterOutput,filteralpha,F5
+
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Sync
+andxor lastsync,lastsync,sync,zero
+skip   ccr,ccr,0x8,1
+acc3   Phase,zero,zero,zero
+andxor lastsync,sync,0x80000000,0x80000000
+
+;Wave Shaper
+interp sawshape,1.0,Pulsewidth,0.0
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,Pulsewidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macsn  Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+interp FilterInput,Square,Waveform,Triangle
+
+;Filter
+interp F1,F1,filteralpha,FilterInput
+interp F2,F2,filteralpha,F1
+interp F3,F3,filteralpha,F2
+interp F4,F4,filteralpha,F3
+interp F5,F5,filteralpha,F4
+interp FilterOutput,FilterOutput,filteralpha,F5
+
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Sync
+andxor lastsync,lastsync,sync,zero
+skip   ccr,ccr,0x8,1
+acc3   Phase,zero,zero,zero
+andxor lastsync,sync,0x80000000,0x80000000
+
+;Wave Shaper
+interp sawshape,1.0,Pulsewidth,0.0
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,Pulsewidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macsn  Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+interp FilterInput,Square,Waveform,Triangle
+
+;Filter
+interp F1,F1,filteralpha,FilterInput
+interp F2,F2,filteralpha,F1
+interp F3,F3,filteralpha,F2
+interp F4,F4,filteralpha,F3
+interp F5,F5,filteralpha,F4
+interp FilterOutput,FilterOutput,filteralpha,F5
+
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Sync
+andxor lastsync,lastsync,sync,zero
+skip   ccr,ccr,0x8,1
+acc3   Phase,zero,zero,zero
+andxor lastsync,sync,0x80000000,0x80000000
+
+;Wave Shaper
+interp sawshape,1.0,Pulsewidth,0.0
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,Pulsewidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macsn  Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+interp FilterInput,Square,Waveform,Triangle
+
+;Filter
+interp F1,F1,filteralpha,FilterInput
+interp F2,F2,filteralpha,F1
+interp F3,F3,filteralpha,F2
+interp F4,F4,filteralpha,F3
+interp F5,F5,filteralpha,F4
+interp FilterOutput,FilterOutput,filteralpha,F5
+
+
+;Oscillator
+macw   Phase,Phase,Delta,One
+
+;Sync
+andxor lastsync,lastsync,sync,zero
+skip   ccr,ccr,0x8,1
+acc3   Phase,zero,zero,zero
+andxor lastsync,sync,0x80000000,0x80000000
+
+;Wave Shaper
+interp sawshape,1.0,Pulsewidth,0.0
+macs   Sawtooth,zero,phase,one
+tstneg Square,Sawtooth,One,Pulsewidth
+tstneg Triangle,Sawtooth,Sawtooth,SawShape
+macsn  Square,Zero,Square,0.25
+interp Offset,-0.5,SawShape,0
+macs   Triangle,Offset,Triangle,One
+interp ShapeNormalize,One,SawShape,0.25
+macs   Triangle,zero,Triangle,ShapeNormalize
+
+;Mixer
+interp FilterInput,Square,Waveform,Triangle
+
+;Filter
+interp F1,F1,filteralpha,FilterInput
+interp F2,F2,filteralpha,F1
+interp F3,F3,filteralpha,F2
+interp F4,F4,filteralpha,F3
+interp F5,F5,filteralpha,F4
+interp FilterOutput,FilterOutput,filteralpha,F5
+
+
+
+macs    Out,Zero,FilterOutput,quarter 
+
+end
+

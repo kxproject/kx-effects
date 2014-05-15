@@ -1,0 +1,21 @@
+; New microcode
+	name "LogTest";
+	copyright "Copyright (c) 2003.";
+	created "11/27/2003";
+	engine "kX";
+	; comment "";
+	guid "f0a9e847-e784-480e-ba38-ff0e1d9aefaf";
+	; -- generated GUID
+    
+    control Drive=0.5
+    temp tmp
+    input In
+    output Out
+; itramsize 0
+; xtramsize 0
+
+; code
+  macs tmp,0.0,in,drive
+  log out,tmp,0x5,1.0; 
+  
+end

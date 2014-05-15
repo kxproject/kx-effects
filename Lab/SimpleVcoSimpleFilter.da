@@ -1,0 +1,94 @@
+; New microcode
+	name "SimpleVcoSimpleFilter";
+	copyright "Copyright (c) 2004.";
+	created "04/14/2009";
+	engine "kX";
+	; comment "";
+	guid "74eb5248-061a-46ba-ba9b-e0843788b955";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+
+const Zero=0.0
+const One=1.0
+control Alpha
+control Frequency
+temp Diff 
+temp Delta
+static Phase
+static Sawtooth
+static intermediate
+output  MainOutput
+
+macs Delta,Zero,Frequency,0.0125
+macw Phase,Phase,Delta,One
+macs Diff,intermediate,Phase,1.0
+macsn intermediate,intermediate,Diff,Alpha
+macs Diff,Sawtooth,intermediate,1.0
+macsn Sawtooth,Sawtooth,Diff,Alpha
+
+macs Delta,Zero,Frequency,0.0125
+macw Phase,Phase,Delta,One
+macs Diff,intermediate,Phase,1.0
+macsn intermediate,intermediate,Diff,Alpha
+macs Diff,Sawtooth,intermediate,1.0
+macsn Sawtooth,Sawtooth,Diff,Alpha
+
+
+macs Delta,Zero,Frequency,0.0125
+macw Phase,Phase,Delta,One
+macs Diff,intermediate,Phase,1.0
+macsn intermediate,intermediate,Diff,Alpha
+macs Diff,Sawtooth,intermediate,1.0
+macsn Sawtooth,Sawtooth,Diff,Alpha
+
+
+macs Delta,Zero,Frequency,0.0125
+macw Phase,Phase,Delta,One
+macs Diff,intermediate,Phase,1.0
+macsn intermediate,intermediate,Diff,Alpha
+macs Diff,Sawtooth,intermediate,1.0
+macsn Sawtooth,Sawtooth,Diff,Alpha
+
+
+macs Delta,Zero,Frequency,0.0125
+macw Phase,Phase,Delta,One
+macs Diff,intermediate,Phase,1.0
+macsn intermediate,intermediate,Diff,Alpha
+macs Diff,Sawtooth,intermediate,1.0
+macsn Sawtooth,Sawtooth,Diff,Alpha
+              macs Delta,Zero,Frequency,0.0125
+macw Phase,Phase,Delta,One
+macs Diff,intermediate,Phase,1.0
+macsn intermediate,intermediate,Diff,Alpha
+macs Diff,Sawtooth,intermediate,1.0
+macsn Sawtooth,Sawtooth,Diff,Alpha
+
+
+macs Delta,Zero,Frequency,0.0125
+macw Phase,Phase,Delta,One
+macs Diff,intermediate,Phase,1.0
+macsn intermediate,intermediate,Diff,Alpha
+macs Diff,Sawtooth,intermediate,1.0
+macsn Sawtooth,Sawtooth,Diff,Alpha
+
+
+macs Delta,Zero,Frequency,0.0125
+macw Phase,Phase,Delta,One
+macs Diff,intermediate,Phase,1.0
+macsn intermediate,intermediate,Diff,Alpha
+macs Diff,Sawtooth,intermediate,1.0
+macsn Sawtooth,Sawtooth,Diff,Alpha
+
+
+
+
+
+macs MainOutput,Zero,Sawtooth,0.25
+ 
+
+end

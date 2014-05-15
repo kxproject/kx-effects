@@ -1,0 +1,63 @@
+; New microcode
+	name "K-New-LFO";
+	copyright "Copyright (c) 2004.";
+	created "07/03/2009";
+	engine "kX";
+	; comment "";
+	guid "5a268d29-3031-41b5-89c1-7aeaa0fed9cb";
+	; -- generated GUID
+
+
+; itramsize 0
+; xtramsize 0
+
+; code
+control Freq
+control PulseWidth
+control WaveForm
+
+output Out
+
+temp wave
+
+static Triangle
+static Guitar
+static SawUp
+static SawDown
+static Square
+static SH
+static SHLag
+temp Delta
+
+exp     Delta,Freq,15,0
+interp  Delta,0.000002083,Delta,0.002083
+macw    SawUp,SawUp,Delta,1.0
+skip    ccr, ccr, 0x200, 1
+macs    SH,noise1,0.0,0.0 
+interp  SHLag, SHLag, 0.001, SH
+macs    SawDown,0.0,SawUp,-1.0
+tstneg  Square,SawUp,1.0,Pulsewidth
+tstneg  Triangle,SawUp,SawUp,PulseWidth
+macints Triangle,-1.0,Triangle,0x2
+log     Guitar,Triangle,7,0
+macs    Guitar,0.5,Guitar,0.5
+
+interp  wave,0x0,WaveForm,0x7
+macints wave,0x0,wave,0x2
+skip    ccr, ccr, 0x7FFFFFFF, wave
+macs    Out,Triangle,0.0,0.0
+skip    ccr,ccr,0x7FFFFFFF,12 
+macs    Out,Guitar,0.0,0.0
+skip    ccr,ccr,0x7FFFFFFF,10 
+macs    Out,SawUp,0.0,0.0
+skip    ccr,ccr,0x7FFFFFFF,8 
+macs    Out,SawDown,0.0,0.0
+skip    ccr,ccr,0x7FFFFFFF,6 
+macs    Out,Square,0.0,0.0
+skip    ccr,ccr,0x7FFFFFFF,4 
+macs    Out,SH,0.0,0.0
+skip    ccr,ccr,0x7FFFFFFF,2
+macs    Out,SHLag,0.0,0.0
+skip    ccr,ccr,0x7FFFFFFF,0
+macs    0.0,0.0,0.0,0.0 
+end

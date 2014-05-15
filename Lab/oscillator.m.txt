@@ -1,0 +1,59 @@
+Fs=48000;
+Order=4;
+OverSample=8;
+Duration=10;
+FStart=1000;
+FEnd=4000;
+FsHigh=OverSample*Fs;
+TotalSamples=Duration*Fs;
+[b,a]=butter(Order,4e4/FsHigh);
+phase=0;
+state=zeros(1,Order);
+wave=zeros(TotalSamples,1);
+Factor=2/(TotalSamples*FsHigh);
+for i=1:TotalSamples
+    delta=Factor*((TotalSamples-i)*FStart+i*FEnd);
+    for j=1:OverSample
+        phase=phase+delta;
+        if phase>=1
+            phase=phase-2;
+        end;
+        if phase>=0
+            input=0.25;
+        else
+            input=-0.25;
+        end;
+        output   = state(1) + 0.000483417348170388*input;
+        state(1) = state(2) + 0.00193366939268155*input  + 3.14663259041098*output;
+        state(2) = state(3) + 0.00290050408902233*input  - 3.78551568901779*output;
+        state(3) = state(4) + 0.00193366939268155*input  + 2.05445406172177*output;
+        state(4) =            0.000483417348170388*input - 0.423305640685682*output;
+    end;
+    if mod(i,Fs)==0
+        i/Fs
+    end;
+    wave(i)=output;
+end;
+wavwrite(wave,Fs,16,'oscillator.wav');
+sound(wave,Fs);
+
+
+	 ;filter
+	 ;macs   Filteroutput,State1,FilterInput,0.000483417348170388
+     
+	 ;macs   FilterIntermediate1,0.0,FilterInput,0.00193366939268155
+	 ;macs   FilterIntermediate2,0.0,FilterOutput,3.14663259041098
+	 ;acc3   State1,State2,FilterIntermediate1,FilterIntermediate2
+
+	 ;macs   FilterIntermediate1,0.0,FilterInput,0.00290050408902233
+	 ;macs   FilterIntermediate2,0.0,FilterOutput,3.78551568901779
+	 ;acc3   State2,State3,FilterIntermediate1,FilterIntermediate2
+
+	 ;macs   FilterIntermediate1,0.0,FilterInput,0.00193366939268155
+	 ;macs   FilterIntermediate2,0.0,FilterOutput,2.05445406172177
+	 ;acc3   State3,State4,FilterIntermediate1,FilterIntermediate2
+
+	 ;macs   FilterIntermediate1,0.0,FilterInput,0.000483417348170388
+	 ;macs   FilterIntermediate2,0.0,FilterOutput,0.423305640685682
+	 ;acc3   State4,0.0,FilterIntermediate1,FilterIntermediate2
+	 
